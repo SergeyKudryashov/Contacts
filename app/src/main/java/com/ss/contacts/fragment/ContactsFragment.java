@@ -1,7 +1,5 @@
 package com.ss.contacts.fragment;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -9,27 +7,32 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.ss.contacts.adapter.HasContactAdapter;
 import com.ss.contacts.manager.Contacts;
 import com.ss.contacts.R;
 import com.ss.contacts.adapter.ContactsAdapter;
 import com.ss.contacts.model.Contact;
 
-public class ContactsFragment extends Fragment {
-    public static final String TITLE = "CONTACTS";
+import static android.Manifest.permission.READ_CONTACTS;
 
-    private RecyclerView mRecyclerView;
+public class ContactsFragment extends Fragment implements HasContactAdapter {
+    public static final String TITLE = "CONTACTS";
+    private static final int REQUEST_READ_CONTACTS = 444;
+
     private ContactsAdapter mAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getContacts();
+    }
 
     @Nullable
     @Override
@@ -40,18 +43,46 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         init(view);
-        askForContactPermission();
     }
 
     private void init(View view) {
         mAdapter = new ContactsAdapter(getContext(), Contacts.getInstance().getContacts());
 
-        mRecyclerView = view.findViewById(R.id.recycler_view_contacts);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mAdapter);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_contacts);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    private boolean mayRequestContacts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (getActivity().checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        } else {
+            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == REQUEST_READ_CONTACTS) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getContacts();
+            }
+        }
     }
 
     private void getContacts() {
+        if (!mayRequestContacts()) {
+            return;
+        }
+
         Cursor phones = getActivity().getContentResolver()
                 .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         while (phones.moveToNext()) {
@@ -60,42 +91,16 @@ public class ContactsFragment extends Fragment {
             String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             contact.setName(name);
             contact.setPhoneNumber(phoneNumber);
+            if (Contacts.getInstance().getContacts().contains(contact))
+                continue;
             Contacts.getInstance().add(contact);
         }
         phones.close();
+        Contacts.getInstance().sort();
     }
 
-    public void askForContactPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.READ_CONTACTS)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Contacts access needed");
-                builder.setPositiveButton(android.R.string.ok, null);
-                builder.setMessage("please confirm Contacts access");//TODO put real question
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        requestPermissions(
-                                new String[]{Manifest.permission.READ_CONTACTS},
-                                0);
-                        getContacts();
-
-                    }
-                });
-                builder.show();
-            } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.READ_CONTACTS},
-                        0);
-                getContacts();
-
-            }
-        } else {
-            getContacts();
-        }
-
+    @Override
+    public ContactsAdapter getAdapter() {
+        return mAdapter;
     }
 }

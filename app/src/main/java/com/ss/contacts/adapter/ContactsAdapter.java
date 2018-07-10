@@ -11,7 +11,6 @@ import com.ss.contacts.R;
 import com.ss.contacts.adapter.viewholder.ContactViewHolder;
 import com.ss.contacts.model.Contact;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactViewHolder> {
@@ -21,8 +20,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactViewHolder> {
 
     public ContactsAdapter(Context context, List<Contact> contacts) {
         mContext = context;
-        mContacts = new ArrayList<>();
-        mContacts.addAll(contacts);
+        mContacts = contacts;
     }
 
     @NonNull
