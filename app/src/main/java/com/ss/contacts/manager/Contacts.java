@@ -31,11 +31,13 @@ public class Contacts {
     }
 
     public void changeFavorite(Contact contact, boolean isChecked) {
-        if (isChecked)
+        if (isChecked) {
             if (!mFavorites.contains(contact))
                 mFavorites.add(contact);
-        else
+        }
+        else {
             mFavorites.remove(contact);
+        }
     }
 
     public Contact getItem(int position) {

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                ((HasContactAdapter) adapter.getItem(position)).getAdapter().notifyDataSetChanged();
+                ((HasContactAdapter) adapter.getItem(position)).notifyAdapter();
             }
 
             @Override

@@ -28,6 +28,11 @@ public class ContactsFragment extends Fragment implements HasContactAdapter {
 
     private ContactsAdapter mAdapter;
 
+    public ContactsFragment() {
+    }
+
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +66,7 @@ public class ContactsFragment extends Fragment implements HasContactAdapter {
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         } else {
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
@@ -100,7 +106,7 @@ public class ContactsFragment extends Fragment implements HasContactAdapter {
     }
 
     @Override
-    public ContactsAdapter getAdapter() {
-        return mAdapter;
+    public void notifyAdapter() {
+        mAdapter.notifyDataSetChanged();
     }
 }

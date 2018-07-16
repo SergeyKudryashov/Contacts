@@ -20,6 +20,9 @@ public class FavoritesFragment extends Fragment implements HasContactAdapter {
 
     private ContactsAdapter mAdapter;
 
+    public FavoritesFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,8 +42,9 @@ public class FavoritesFragment extends Fragment implements HasContactAdapter {
         recyclerView.setAdapter(mAdapter);
     }
 
+
     @Override
-    public ContactsAdapter getAdapter() {
-        return mAdapter;
+    public void notifyAdapter() {
+        mAdapter.notifyDataSetChanged();
     }
 }
