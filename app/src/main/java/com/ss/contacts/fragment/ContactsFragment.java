@@ -31,13 +31,6 @@ public class ContactsFragment extends Fragment implements HasContactAdapter {
     public ContactsFragment() {
     }
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getContacts();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +48,8 @@ public class ContactsFragment extends Fragment implements HasContactAdapter {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_contacts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(mAdapter);
+
+        getContacts();
     }
 
     private boolean mayRequestContacts() {
