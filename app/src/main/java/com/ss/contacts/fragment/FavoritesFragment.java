@@ -15,12 +15,20 @@ import com.ss.contacts.adapter.ContactsAdapter;
 import com.ss.contacts.adapter.HasContactAdapter;
 import com.ss.contacts.manager.Contacts;
 
-public class FavoritesFragment extends Fragment implements HasContactAdapter {
+import java.io.Serializable;
+
+public class FavoritesFragment extends Fragment implements HasContactAdapter, Serializable {
     public static final String TITLE = "Favorites";
 
     private ContactsAdapter mAdapter;
 
     public FavoritesFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Nullable

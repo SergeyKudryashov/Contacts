@@ -20,15 +20,23 @@ import com.ss.contacts.R;
 import com.ss.contacts.adapter.ContactsAdapter;
 import com.ss.contacts.model.Contact;
 
+import java.io.Serializable;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class ContactsFragment extends Fragment implements HasContactAdapter {
+public class ContactsFragment extends Fragment implements HasContactAdapter, Serializable {
     public static final String TITLE = "CONTACTS";
     private static final int REQUEST_READ_CONTACTS = 444;
 
     private ContactsAdapter mAdapter;
 
     public ContactsFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Nullable

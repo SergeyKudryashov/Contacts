@@ -1,31 +1,22 @@
 package com.ss.contacts.adapter;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 import com.ss.contacts.fragment.ContactsFragment;
 import com.ss.contacts.fragment.FavoritesFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> mFragments;
 
-    public ViewPagerFragmentAdapter(FragmentManager fm) {
+    public ViewPagerFragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
-        init();
-    }
-
-    private void init() {
-        mFragments = new ArrayList<>();
-        mFragments.add(new ContactsFragment());
-        mFragments.add(new FavoritesFragment());
+        mFragments = fragments;
     }
 
     @Override
@@ -49,13 +40,4 @@ public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
-
-//    @NonNull
-//    @Override
-//    public Object instantiateItem(ViewGroup container, int position) {
-//        Fragment fragment = (Fragment) super.instantiateItem(container, position);
-//        mFragments.set(position, fragment);
-//        return fragment;
-//    }
-
 }

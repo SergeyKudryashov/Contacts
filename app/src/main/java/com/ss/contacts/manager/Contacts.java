@@ -5,13 +5,12 @@ import com.ss.contacts.model.Contact;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 public class Contacts {
 
     private List<Contact> mContacts;
-    private ArrayList<Contact> mFavorites;
+    private List<Contact> mFavorites;
     private static Contacts mInstance;
 
     public static Contacts getInstance() {
